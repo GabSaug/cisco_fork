@@ -68,6 +68,7 @@ fi
 echo "Done" >> $LOG
 
 cd $CISCO_MODELS/jTrans/
+source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate jtrans
 echo "Running jTrans test_script in $(pwd)" >> $LOG
 if ! ./test_script.sh; then
@@ -79,6 +80,7 @@ fi
 echo "Done" >> $LOG
 
 cd $CISCO_MODELS/HermesSim/
+source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate hermessim
 echo "Running HermesSim test_script in $(pwd)" >> $LOG
 if ! ./test_script.sh; then

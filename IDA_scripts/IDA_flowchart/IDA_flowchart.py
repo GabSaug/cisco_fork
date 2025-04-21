@@ -151,6 +151,7 @@ def analyze_functions(idb_path, output_csv):
         try:
             func = idaapi.get_func(fva)
             func_name = idaapi.get_func_name(fva)
+            func_name = func_name.replace("_isra_0","").replace(".isra.0","")
             # Get the list of basic-block addresses
             bb_sa_list = list(idaapi.FlowChart(func))
 
