@@ -159,6 +159,7 @@ class GNNModel:
         latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
         log.info("Loading trained model from: {}".format(latest_checkpoint))
         self._tf_saver.restore(self._session, latest_checkpoint)
+        breakpoint()
         return
 
     def _run_evaluation(self, batch_generator):

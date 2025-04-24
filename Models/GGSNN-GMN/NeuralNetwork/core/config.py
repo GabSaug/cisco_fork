@@ -271,26 +271,6 @@ def update_config_datasetadv(config_dict, outputdir, featuresdir):
             "graph_func_dict_opc_200.json")
     )
 
-    # Testing
-    testdir = os.path.join(inputdir, "pairs", "testing")
-    config_dict['testing'] = dict(
-        full_tests_inputs=[
-            os.path.join(testdir, "neg_rank_testing_Dataset-adv.csv"),
-            os.path.join(testdir, "neg_testing_Dataset-adv.csv"),
-            os.path.join(testdir, "pos_rank_testing_Dataset-adv.csv"),
-            os.path.join(testdir, "pos_testing_Dataset-adv.csv")
-        ],
-        full_tests_outputs=[
-            os.path.join(outputdir, "neg_rank_testing_Dataset-adv_sim.csv"),
-            os.path.join(outputdir, "neg_testing_Dataset-adv_sim.csv"),
-            os.path.join(outputdir, "pos_rank_testing_Dataset-adv_sim.csv"),
-            os.path.join(outputdir, "pos_testing_Dataset-_sim2.csv")
-        ],
-        features_testing_path=os.path.join(
-            featuresdir,
-            "Dataset-adv_testing",
-            "graph_func_dict_opc_200.json")
-    )
 
 def get_config(args):
     """The default configs."""
