@@ -57,16 +57,6 @@ if ! ./test_script.sh; then
 fi
 echo "Done" >> $LOG
 
-cd $CISCO_MODELS/Trex/
-echo "Running Trex test_script in $(pwd)" >> $LOG
-if ! ./test_script.sh; then
-	echo "Error running test script, no Dataset testing results created"
-	echo "Error running test script, no Dataset testing results created" >> $LOG
-	notif error "$0 $*" finished
-	exit 1
-fi
-echo "Done" >> $LOG
-
 cd $CISCO_MODELS/jTrans/
 source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate jtrans
@@ -83,6 +73,18 @@ cd $CISCO_MODELS/HermesSim/
 source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate hermessim
 echo "Running HermesSim test_script in $(pwd)" >> $LOG
+if ! ./test_script.sh; then
+	echo "Error running test script, no Dataset testing results created"
+	echo "Error running test script, no Dataset testing results created" >> $LOG
+	notif error "$0 $*" finished
+	exit 1
+fi
+echo "Done" >> $LOG
+
+cd $CISCO_MODELS/Trex/
+source $HOME/miniconda3/etc/profile.d/conda.sh
+conda activate kelpie
+echo "Running Trex test_script in $(pwd)" >> $LOG
 if ! ./test_script.sh; then
 	echo "Error running test script, no Dataset testing results created"
 	echo "Error running test script, no Dataset testing results created" >> $LOG

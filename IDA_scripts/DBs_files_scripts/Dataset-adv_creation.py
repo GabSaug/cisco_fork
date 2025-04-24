@@ -154,7 +154,7 @@ def create_pos_neg_validation(pairs, df_validation):
 
     # Save the DataFrame to file
     pos_validation_pairs.to_csv(join(OUTPUT_DIR, "pairs", "validation", "pos_validation_Dataset-adv.csv"))
-    neg_validation_pairs.to_csv(join(OUTPUT_DIR, "pairs", "validation", "pos_validation_Dataset-adv.csv"))
+    neg_validation_pairs.to_csv(join(OUTPUT_DIR, "pairs", "validation", "neg_validation_Dataset-adv.csv"))
 
 
 create_pos_neg_validation(pairs, df_validation)

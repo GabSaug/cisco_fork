@@ -133,29 +133,14 @@ def update_config_datasetadv(config_dict, outputdir):
     """Config for Dataset-adv."""
     config_dict['training']['df_train_path'] = \
         "/input/Dataset-adv/training_Dataset-adv.csv"
+
     config_dict['training']['features_train_path'] = \
         "/input/Dataset-adv/features/training/zeek_Dataset-adv_training.json"
+
     config_dict['validation'] = dict(
         positive_path="/input/Dataset-adv/pairs/validation/pos_validation_Dataset-adv.csv",
         negative_path="/input/Dataset-adv/pairs/validation/neg_validation_Dataset-adv.csv",
         features_validation_path="/input/Dataset-adv/features/validation/zeek_Dataset-adv_validation.json"
-    )
-    config_dict['testing'] = dict(
-        positive_path="/input/Dataset-adv/pairs/testing/pos_testing_Dataset-adv.csv",
-        negative_path="/input/Dataset-adv/pairs/testing/neg_testing_Dataset-adv.csv",
-        full_tests_inputs=[
-            "/input/Dataset-adv/pairs/testing/neg_rank_testing_Dataset-adv.csv",
-            "/input/Dataset-adv/pairs/testing/neg_testing_Dataset-adv.csv",
-            "/input/Dataset-adv/pairs/testing/pos_rank_testing_Dataset-adv.csv",
-            "/input/Dataset-adv/pairs/testing/pos_testing_Dataset-adv.csv"
-        ],
-        full_tests_outputs=[
-            os.path.join(outputdir, "neg_rank_testing_Dataset-adv_sim.csv"),
-            os.path.join(outputdir, "neg_testing_Dataset-adv_sim.csv"),
-            os.path.join(outputdir, "pos_rank_testing_Dataset-adv_sim.csv"),
-            os.path.join(outputdir, "pos_testing_Dataset-adv_sim.csv")
-        ],
-        features_testing_path="/input/Dataset-adv/features/testing/zeek_Dataset-adv_testing.json"
     )
 
 def get_config(args):
