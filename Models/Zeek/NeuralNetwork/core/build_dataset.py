@@ -56,11 +56,14 @@ def build_train_val_test_generators(config):
         config['validation']['negative_path'],
         config['validation']['features_validation_path'])
 
-    testing_set = build_batch_generator(
-        config,
-        config['testing']['positive_path'],
-        config['testing']['negative_path'],
-        config['testing']['features_testing_path'])
+    if 'positive_path' in config['testing']:
+        testing_set = build_batch_generator(
+            config,
+            config['testing']['positive_path'],
+            config['testing']['negative_path'],
+            config['testing']['features_testing_path'])
+    else:
+        testing_set = None
 
     return training_set, validation_set, testing_set
 

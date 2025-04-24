@@ -24,4 +24,3 @@ COPY zeek_nn.py /code/
 COPY core/ /code/core/
 COPY model_checkpoint/ /code/model_checkpoint/
 COPY model_checkpoint_2024-06-14/ /code/model_checkpoint_2024-06-14/
-COPY model_checkpoint_adv/ /code/model_checkpoint_adv/

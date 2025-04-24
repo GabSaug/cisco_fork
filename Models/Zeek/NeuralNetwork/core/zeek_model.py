@@ -154,7 +154,7 @@ class ZeekModel:
         Zeek train
         """
         # Create a training and validation dataset
-        training_set, validation_set, testing_set = \
+        training_set, validation_set, _ = \
             build_train_val_test_generators(self._config)
 
         # Model initialization
@@ -180,7 +180,6 @@ class ZeekModel:
 
         # Let's check the starting values
         self._run_evaluation(validation_set)
-        self._run_evaluation(testing_set)
 
         for epoch_counter in range(self._config['training']['num_epochs']):
             log.info("Epoch %d", epoch_counter)
@@ -224,8 +223,6 @@ class ZeekModel:
                 best_val_auc = val_auc
                 log.warning("best_val_auc: %.4f", best_val_auc)
 
-            log.info("Testing set")
-            self._run_evaluation(testing_set)
 
             # Save the model
             self._tf_saver.save(
