@@ -48,6 +48,8 @@ from os.path import join
 from os.path import relpath
 from os.path import samefile
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import os
 
 BIN_FOLDER = join(dirname(dirname(abspath(__file__))), 'Binaries')
 IDB_FOLDER = join(dirname(dirname(abspath(__file__))), 'IDBs')
@@ -94,7 +96,7 @@ def export_idb(input_path, output_path):
 
 
 def directory_walk(input_folder, output_folder):
-    """Walk the directory tree and launch IDA Pro."""
+    """Walk the directory tree and launch IDA Pro in parallel."""
     try:
         print("[D] input_folder: {}".format(input_folder))
         print("[D] output_folder: {}".format(output_folder))
@@ -107,11 +109,11 @@ def directory_walk(input_folder, output_folder):
         if not isdir(output_folder):
             mkdir(output_folder)
 
+        # Collect all tasks first
+        tasks = []
         for root, _, files in walk(input_folder):
             for fname in files:
-                if fname.endswith(".log") \
-                        or fname.endswith(".idb") \
-                        or fname.endswith(".i64"):
+                if fname.endswith(".log") or fname.endswith(".idb") or fname.endswith(".i64"):
                     continue
 
                 tmp_out = output_folder
@@ -124,9 +126,25 @@ def directory_walk(input_folder, output_folder):
 
                 input_path = join(root, fname)
                 output_path = join(tmp_out, fname + ".i64")
-                if export_idb(input_path, output_path):
-                    export_success += 1
-                else:
+                tasks.append((input_path, output_path))
+
+        # Parallel processing
+        num_workers = os.cpu_count() or 30
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            future_to_task = {
+                executor.submit(export_idb, input_path, output_path): (input_path, output_path)
+                for input_path, output_path in tasks
+            }
+            for future in as_completed(future_to_task):
+                input_path, output_path = future_to_task[future]
+                try:
+                    result = future.result()
+                    if result:
+                        export_success += 1
+                    else:
+                        export_error += 1
+                except Exception as e:
+                    print(f"[!] Exception for {input_path}: {e}")
                     export_error += 1
 
         print("# IDBs correctly exported: {}".format(export_success))

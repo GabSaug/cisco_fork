@@ -45,6 +45,9 @@ from os.path import isfile
 from os.path import join
 from os.path import relpath
 
+import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 IDA_PATH = getenv("IDA_PATH", "/home/gab/idapro-7.5/idat64")
 IDA_PLUGIN = join(dirname(abspath(__file__)), 'IDA_flowchart.py')
 REPO_PATH = dirname(dirname(dirname(abspath(__file__))))
@@ -67,14 +70,10 @@ def get_selected_idbs(selected_pairs_file):
                 continue
     return selected_idbs
 
-
 @click.command()
-@click.option("-i", "--idbs-folder", required=True,
-              help="Path to the IDBs folder")
-@click.option("-o", "--output-csv", required=True,
-              help="Path to the output CSV file")
-@click.option("-s", "--selected-pairs", required=True,
-              help="Path to the selected_pairs file")
+@click.option("-i", "--idbs-folder", required=True, help="Path to the IDBs folder")
+@click.option("-o", "--output-csv", required=True, help="Path to the output CSV file")
+@click.option("-s", "--selected-pairs", required=True, help="Path to the selected_pairs file")
 def main(idbs_folder, output_csv, selected_pairs):
     """Call IDA_flowchart.py IDA script."""
     try:
@@ -88,50 +87,49 @@ def main(idbs_folder, output_csv, selected_pairs):
 
         selected_idbs = get_selected_idbs(selected_pairs)
 
-        success_cnt, error_cnt = 0, 0
+        jobs = []
         for root, _, files in walk(idbs_folder):
             for f_name in files:
-                if (not f_name.endswith(".i64")) and \
-                        (not f_name.endswith(".idb")):
+                if (not f_name.endswith(".i64")) and (not f_name.endswith(".idb")):
                     continue
 
                 idb_path = join(root, f_name)
-                print("\n[D] Processing: {}".format(idb_path))
-
                 if not isfile(idb_path):
                     print("[!] Error: {} not exists".format(idb_path))
                     continue
 
-                # Compute the normalized relative path from the main directory
-                rel_idb_path = relpath(
-                    join(getcwd(), root, f_name),  # absolute path if IDB
-                    REPO_PATH)  # absolute path of the repo folder
-
+                rel_idb_path = relpath(join(getcwd(), root, f_name), REPO_PATH)
                 if rel_idb_path not in selected_idbs:
                     print(f"{rel_idb_path} not in selected pairs !")
                     continue
 
-                cmd = [IDA_PATH,
-                       '-A',
-                       '-L{}'.format(LOG_PATH),
-                       '-S{}'.format(IDA_PLUGIN),
-                       '-Oflowchart:{}:{}'.format(
-                           rel_idb_path,
-                           output_csv),
-                       idb_path]
+                jobs.append((idb_path, rel_idb_path))
 
-                print("[D] cmd: {}".format(cmd))
+        def process_job(idb_path, rel_idb_path):
+            cmd = [IDA_PATH,
+                   '-A',
+                   '-L{}'.format(LOG_PATH),
+                   '-S{}'.format(IDA_PLUGIN),
+                   '-Oflowchart:{}:{}'.format(rel_idb_path, output_csv),
+                   idb_path]
+            print("[D] cmd: {}".format(cmd))
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = proc.communicate()
+            return idb_path, proc.returncode, stdout, stderr
 
-                proc = subprocess.Popen(
-                    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                stdout, stderr = proc.communicate()
+        num_workers = os.cpu_count() or 4
+        success_cnt, error_cnt = 0, 0
 
-                if proc.returncode == 0:
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            futures = [executor.submit(process_job, idb, relidb) for idb, relidb in jobs]
+            for future in as_completed(futures):
+                idb_path, retcode, stdout, stderr = future.result()
+                if retcode == 0:
                     print("[D] {}: success".format(idb_path))
                     success_cnt += 1
                 else:
-                    print("[!] Error in {} (returncode={})".format(
-                        idb_path, proc.returncode))
+                    print("[!] Error in {} (returncode={})".format(idb_path, retcode))
+                    print(stderr.decode())
                     error_cnt += 1
 
         print("\n# IDBs correctly processed: {}".format(success_cnt))
@@ -139,7 +137,6 @@ def main(idbs_folder, output_csv, selected_pairs):
 
     except Exception as e:
         print("[!] Exception in cli_flowchart\n{}".format(e))
-
 
 if __name__ == '__main__':
     main()

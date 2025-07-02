@@ -50,6 +50,9 @@ REPO_PATH = dirname(dirname(dirname(abspath(__file__))))
 LOG_PATH = "acfg_disasm_log.txt"
 
 
+import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 @click.command()
 @click.option('-j', '--json-path', required=True,
               help='JSON file with selected functions.')
@@ -73,19 +76,17 @@ def main(json_path, output_dir):
         with open(json_path) as f_in:
             jj = json.load(f_in)
 
-            success_cnt, error_cnt = 0, 0
-            start_time = time.time()
+            jobs = []
             for idb_rel_path in jj.keys():
-                print("\n[D] Processing: {}".format(idb_rel_path))
-
                 # Convert the relative path into a full path
                 idb_path = join(REPO_PATH, idb_rel_path)
-                print("[D] IDB full path: {}".format(idb_path))
-
                 if not isfile(idb_path):
                     print("[!] Error: {} does not exist".format(idb_path))
                     continue
+                jobs.append((idb_rel_path, idb_path))
 
+            def process_job(idb_rel_path, idb_path):
+                print("\n[D] Processing: {}".format(idb_rel_path))
                 cmd = [IDA_PATH,
                        '-A',
                        '-L{}'.format(LOG_PATH),
@@ -95,20 +96,28 @@ def main(json_path, output_dir):
                            idb_rel_path,
                            output_dir),
                        idb_path]
-
                 print("[D] cmd: {}".format(cmd))
-
                 proc = subprocess.Popen(
                     cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, stderr = proc.communicate()
+                return idb_path, proc.returncode, stdout, stderr
 
-                if proc.returncode == 0:
-                    print("[D] {}: success".format(idb_path))
-                    success_cnt += 1
-                else:
-                    print("[!] Error in {} (returncode={})".format(
-                        idb_path, proc.returncode))
-                    error_cnt += 1
+            num_workers = os.cpu_count() or 4
+            success_cnt, error_cnt = 0, 0
+            start_time = time.time()
+
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                futures = [executor.submit(process_job, idb_rel, idb) for idb_rel, idb in jobs]
+                for future in as_completed(futures):
+                    idb_path, retcode, stdout, stderr = future.result()
+                    if retcode == 0:
+                        print("[D] {}: success".format(idb_path))
+                        success_cnt += 1
+                    else:
+                        print("[!] Error in {} (returncode={})".format(
+                            idb_path, retcode))
+                        print(stderr.decode())
+                        error_cnt += 1
 
             end_time = time.time()
             print("[D] Elapsed time: {}".format(end_time - start_time))
@@ -120,7 +129,6 @@ def main(json_path, output_dir):
 
     except Exception as e:
         print("[!] Exception in cli_acfg_disasm\n{}".format(e))
-
 
 if __name__ == '__main__':
     main()
