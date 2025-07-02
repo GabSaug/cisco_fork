@@ -351,6 +351,8 @@ def get_config(args):
         checkpoint_dir=args.checkpointdir,
         seed=11
     )
+    if args.checkpoint_name:
+        config_dict["checkpoint_name"] = args.checkpoint_name
     if args.dataset == 'one':
         update_config_datasetone(
             config_dict, args.outputdir, args.featuresdir)

@@ -153,14 +153,31 @@ class GNNModel:
         return
 
     def _restore_model(self):
-        """Restore the model from the latest checkpoint"""
+        """Restore the model from a specific or latest checkpoint"""
         checkpoint_dir = self._config['checkpoint_dir']
+        checkpoint_path = self._config.get('checkpoint_path')  # optional specific path
+
         log.info("Config checkpoint_dir: {}".format(checkpoint_dir))
-        latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
-        log.info("Loading trained model from: {}".format(latest_checkpoint))
-        self._tf_saver.restore(self._session, latest_checkpoint)
-        breakpoint()
-        return
+
+        if checkpoint_path:
+            restore_path = checkpoint_path
+            log.info("Restoring from specific checkpoint: {}".format(restore_path))
+        else:
+            restore_path = tf.train.latest_checkpoint(checkpoint_dir)
+            if restore_path is None:
+                raise FileNotFoundError(f"No checkpoint found in {checkpoint_dir}")
+            log.info("Restoring from latest checkpoint: {}".format(restore_path))
+
+        self._tf_saver.restore(self._session, restore_path)
+        log.info("Model successfully restored.")
+
+        #"""Restore the model from the latest checkpoint"""
+        #checkpoint_dir = self._config['checkpoint_dir']
+        #log.info("Config checkpoint_dir: {}".format(checkpoint_dir))
+        #latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
+        #log.info("Loading trained model from: {}".format(latest_checkpoint))
+        #self._tf_saver.restore(self._session, latest_checkpoint)
+        #return
 
     def _run_evaluation(self, batch_generator):
         """
