@@ -69,6 +69,9 @@ if ! ./test_script.sh; then
 fi
 echo "Done" >> $LOG
 
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate hermessim
+
 cd $CISCO_MODELS/HermesSim/
 source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate hermessim
@@ -81,6 +84,7 @@ if ! ./test_script.sh; then
 fi
 echo "Done" >> $LOG
 
+conda activate kelpie
 cd $CISCO_MODELS/Trex/
 source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate kelpie
