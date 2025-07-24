@@ -1,8 +1,11 @@
 [submodule "Models/jTrans"]
 	path = Models/jTrans
 	url = git@github.com:GabSaug/jtrans_fork.git
+	branch = main
 	ignore = dirty
+
 [submodule "Models/HermesSim"]
 	path = Models/HermesSim
 	url = git@github.com:GabSaug/hermesssim_fork.git
+	branch = main
 	ignore = dirty

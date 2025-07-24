@@ -1,5 +1,6 @@
 OUT_DIR=$(realpath "$1")
 
+source $HOME/miniconda3/etc/profile.d/conda.sh
 LOG="./models.log"
 CISCO_MODELS=$(realpath "Models/")
 CISCO_RESULTS=$(realpath "Results/")
@@ -17,6 +18,7 @@ if ! ./test_script.sh; then
 	exit 1
 fi
 echo "Done" >> $LOG
+cp $CISCO_RESULTS/csv/* $OUT_DIR
 
 cd $CISCO_MODELS/Asm2vec/
 echo "Running asm2vec test_script in $(pwd)" >> $LOG
@@ -27,6 +29,7 @@ if ! ./test_script.sh; then
 	exit 1
 fi
 echo "Done" >> $LOG
+cp $CISCO_RESULTS/csv/* $OUT_DIR
 
 cd $CISCO_MODELS/GGSNN-GMN/
 echo "Running gnn_opc test_script in $(pwd)" >> $LOG
@@ -37,6 +40,7 @@ if ! ./test_script.sh gnn_opc; then
 	exit 1
 fi
 echo "Done" >> $LOG
+cp $CISCO_RESULTS/csv/* $OUT_DIR
 
 echo "Running gmn test_script in $(pwd)" >> $LOG
 if ! ./test_script.sh gmn_opc; then
@@ -46,6 +50,7 @@ if ! ./test_script.sh gmn_opc; then
 	exit 1
 fi
 echo "Done" >> $LOG
+cp $CISCO_RESULTS/* $OUT_DIR
 
 cd $CISCO_MODELS/Zeek/
 echo "Running gnn test_script in $(pwd)" >> $LOG
@@ -56,8 +61,11 @@ if ! ./test_script.sh; then
 	exit 1
 fi
 echo "Done" >> $LOG
+cp $CISCO_RESULTS/csv/* $OUT_DIR
 
 cd $CISCO_MODELS/jTrans/
+conda activate jtrans
+echo "Running jtrans test_script in $(pwd)" >> $LOG
 source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate jtrans
 echo "Running jTrans test_script in $(pwd)" >> $LOG
@@ -68,12 +76,9 @@ if ! ./test_script.sh; then
 	exit 1
 fi
 echo "Done" >> $LOG
-
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate hermessim
+cp $CISCO_RESULTS/csv/* $OUT_DIR
 
 cd $CISCO_MODELS/HermesSim/
-source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate hermessim
 echo "Running HermesSim test_script in $(pwd)" >> $LOG
 if ! ./test_script.sh; then
@@ -83,6 +88,7 @@ if ! ./test_script.sh; then
 	exit 1
 fi
 echo "Done" >> $LOG
+cp $CISCO_RESULTS/csv/* $OUT_DIR
 
 conda activate kelpie
 cd $CISCO_MODELS/Trex/
@@ -96,16 +102,6 @@ if ! ./test_script.sh; then
 	exit 1
 fi
 echo "Done" >> $LOG
-
-
+cp $CISCO_RESULTS/csv/* $OUT_DIR
 cd $CWD
-
-# copy the resulting csvs
-if ! cp $CISCO_RESULTS/csv/pairs_results_Dataset-Muaz_*.csv $OUT_DIR/; then
-	echo "error copying result csvs"
-	echo "error copying result csvs" >> $LOG
-	exit 1
-fi
-
-echo "Done"
 echo "Done" >> $LOG

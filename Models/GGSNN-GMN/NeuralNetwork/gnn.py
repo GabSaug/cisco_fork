@@ -172,7 +172,7 @@ def main():
     parser.add_argument('-c', '--checkpointdir', required=True,
                         help='Input/output for model checkpoint')
 
-    parser.add_argument('--checkpoint_name')
+    parser.add_argument('--checkpoint_name',
                         help='Input/output for model checkpoint')
 
     parser.add_argument('-o', '--outputdir', required=True,

@@ -158,6 +158,7 @@ class GNNModel:
         checkpoint_path = self._config.get('checkpoint_path')  # optional specific path
 
         log.info("Config checkpoint_dir: {}".format(checkpoint_dir))
+        log.info("Config checkpoint_path: {}".format(checkpoint_path))
 
         if checkpoint_path:
             restore_path = checkpoint_path

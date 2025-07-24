@@ -9,12 +9,18 @@
 N_BB_MIN=$1
 LOG=./preproc.log
 
+mkdir -p IDBs/Dataset-Muaz/
+mkdir -p DBs/Dataset-Muaz/
+
 CISCO_IDBS=$(realpath "IDBs/Dataset-Muaz/")
 CISCO_DBS=$(realpath "DBs/Dataset-Muaz/")
 CISCO_SCRIPTS=$(realpath "IDA_scripts/")
 
-rm -r "$CISCO_IDBS"/*
-rm -r "$CISCO_DBS"/*
+rm -r "$CISCO_IDBS"
+rm -r "$CISCO_DBS"
+
+mkdir -p $CISCO_DBS
+mkdir -p $CISCO_IDBS
 
 # preprocess the new binaries
 cd $CISCO_SCRIPTS
