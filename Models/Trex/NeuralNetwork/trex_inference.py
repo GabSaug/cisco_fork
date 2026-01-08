@@ -43,6 +43,12 @@ import torch
 from fairseq.models.trex import TrexModel
 from tqdm import tqdm
 
+def move_to_cuda(sample, device):
+    if torch.is_tensor(sample):
+        return sample.to(device)
+    elif isinstance(sample, dict):
+        return {k: move_to_cuda(v, device) for k, v in sample.items()}
+    return sample
 
 def transform(f_dict):
     new_dict = dict()
@@ -87,12 +93,15 @@ def main(input_pairs, input_traces, model_checkpoint_dir,
         seq_combine='sum',
         drop_field=None)
 
-    # print("[D] Running Trex on GPU")
-    # trex.cuda()
+    if torch.cuda.is_available():
+        trex.cuda()  # Move model parameters to GPU
+        print("[D] Trex model moved to GPU")
+
     trex.eval()
 
     print("[D] Proccessing: {}".format(input_pairs))
     df = pd.read_csv(input_pairs, index_col=0)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     cs_list = list()
     iterator = df.iterrows()
@@ -102,10 +111,14 @@ def main(input_pairs, input_traces, model_checkpoint_dir,
         feat_a = func_traces[p_row['idb_path_1']][p_row['fva_1'].strip("L")]
         feat_b = func_traces[p_row['idb_path_2']][p_row['fva_2'].strip("L")]
 
-        emb_a = trex.predict('similarity', trex.encode(transform(feat_a)))
-        emb_b = trex.predict('similarity', trex.encode(transform(feat_b)))
+        tokens_a = move_to_cuda(trex.encode(transform(feat_a)), device)
+        tokens_b = move_to_cuda(trex.encode(transform(feat_b)), device)
 
-        cs_list.append(torch.cosine_similarity(emb_a, emb_b)[0].item())
+        emb_a = trex.predict('similarity', tokens_a)
+        emb_b = trex.predict('similarity', tokens_b)
+
+        sim = torch.cosine_similarity(emb_a, emb_b)
+        cs_list.append(sim.detach().cpu().item())
 
     # Saving the cosine similarity in the 'sim' column
     df['sim'] = cs_list[:df.shape[0]]

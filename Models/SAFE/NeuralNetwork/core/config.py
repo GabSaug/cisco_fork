@@ -72,22 +72,34 @@ def update_config_datasetone(config_dict, outputdir, featuresdir):
     testdir = os.path.join(inputdir, "pairs", "testing")
     config_dict['testing'] = dict(
         full_tests_inputs=[
-            os.path.join(testdir, "neg_rank_testing_Dataset-1.csv"),
-            os.path.join(testdir, "neg_testing_Dataset-1.csv"),
-            os.path.join(testdir, "pos_rank_testing_Dataset-1.csv"),
-            os.path.join(testdir, "pos_testing_Dataset-1.csv")
+            os.path.join(testdir, "pairs_testing_Dataset-1.csv")
         ],
         full_tests_outputs=[
-            os.path.join(outputdir, "neg_rank_testing_Dataset-1_sim.csv"),
-            os.path.join(outputdir, "neg_testing_Dataset-1_sim.csv"),
-            os.path.join(outputdir, "pos_rank_testing_Dataset-1_sim.csv"),
-            os.path.join(outputdir, "pos_testing_Dataset-_sim2.csv")
+            os.path.join(outputdir, "pairs_testing_Dataset-1.csv")
         ],
         features_testing_path=os.path.join(
             featuresdir,
-            "Dataset-1_testing",
+            "Dataset-1",
             "instructions_embeddings_list_250.json")
     )
+    #config_dict['testing'] = dict(
+    #    full_tests_inputs=[
+    #        os.path.join(testdir, "neg_rank_testing_Dataset-1.csv"),
+    #        os.path.join(testdir, "neg_testing_Dataset-1.csv"),
+    #        os.path.join(testdir, "pos_rank_testing_Dataset-1.csv"),
+    #        os.path.join(testdir, "pos_testing_Dataset-1.csv")
+    #    ],
+    #    full_tests_outputs=[
+    #        os.path.join(outputdir, "neg_rank_testing_Dataset-1_sim.csv"),
+    #        os.path.join(outputdir, "neg_testing_Dataset-1_sim.csv"),
+    #        os.path.join(outputdir, "pos_rank_testing_Dataset-1_sim.csv"),
+    #        os.path.join(outputdir, "pos_testing_Dataset-_sim2.csv")
+    #    ],
+    #    features_testing_path=os.path.join(
+    #        featuresdir,
+    #        "Dataset-1_testing",
+    #        "instructions_embeddings_list_250.json")
+    #)
 
 
 def update_config_datasettwo(config_dict, outputdir, featuresdir):

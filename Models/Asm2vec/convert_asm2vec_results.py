@@ -48,36 +48,26 @@ def compute_embedding_similarity(df_pairs, df_asm2vec):
 
 # ### Process Dataset-1 results
 
-#DB1_PATH = "../../DBs/Dataset-1/pairs/testing/"
-#
-#for folder in [
-#    'Dataset-1_asm2vec_e10',
-#    'Dataset-1_pvdbow_e10',
-#        'Dataset-1_pvdm_e10']:
-#
-#    embedding_path = os.path.join(
-#        "../data/raw_results/Asm2vec/", folder, "embeddings.csv")
-#    print("[D] Processing {}".format(embedding_path))
-#    if not os.path.isfile(embedding_path):
-#        print("[!] File not found: {}".format(embedding_path))
-#        continue
-#
-#    df_emb = pd.read_csv(embedding_path)
-#
-#    df_pos = pd.read_csv(os.path.join(DB1_PATH, "pos_testing_Dataset-1.csv"), index_col=0)
-#    df_neg = pd.read_csv(os.path.join(DB1_PATH, "neg_testing_Dataset-1.csv"), index_col=0)
-#    df_pos_rank = pd.read_csv(os.path.join(DB1_PATH, "pos_rank_testing_Dataset-1.csv"), index_col=0)
-#    df_neg_rank = pd.read_csv(os.path.join(DB1_PATH, "neg_rank_testing_Dataset-1.csv"), index_col=0)
-#    
-#    df_pos = compute_embedding_similarity(df_pos, df_emb)
-#    df_neg = compute_embedding_similarity(df_neg, df_emb)
-#    df_pos_rank = compute_embedding_similarity(df_pos_rank, df_emb)
-#    df_neg_rank = compute_embedding_similarity(df_neg_rank, df_emb)
-#
-#    df_pos.to_csv("../data/Dataset-1/pos_testing_{}.csv".format(folder), index=False)
-#    df_neg.to_csv("../data/Dataset-1/neg_testing_{}.csv".format(folder), index=False)
-#    df_pos_rank.to_csv("../data/Dataset-1/pos_rank_testing_{}.csv".format(folder), index=False)
-#    df_neg_rank.to_csv("../data/Dataset-1/neg_rank_testing_{}.csv".format(folder), index=False)
+DB1_PATH = "../../DBs/Dataset-1/pairs/testing/"
+EMB_FOLDER = "./asm2vec_inference_Dataset-1-testing"
+embedding_path = os.path.join(EMB_FOLDER, "embeddings.csv")
+
+
+    #df_pos = pd.read_csv(os.path.join(DB1_PATH, "pos_testing_Dataset-1.csv"), index_col=0)
+    #df_neg = pd.read_csv(os.path.join(DB1_PATH, "neg_testing_Dataset-1.csv"), index_col=0)
+    #df_pos_rank = pd.read_csv(os.path.join(DB1_PATH, "pos_rank_testing_Dataset-1.csv"), index_col=0)
+    #df_neg_rank = pd.read_csv(os.path.join(DB1_PATH, "neg_rank_testing_Dataset-1.csv"), index_col=0)
+
+    #df_pos = compute_embedding_similarity(df_pos, df_emb)
+    #df_neg = compute_embedding_similarity(df_neg, df_emb)
+    #df_pos_rank = compute_embedding_similarity(df_pos_rank, df_emb)
+    #df_neg_rank = compute_embedding_similarity(df_neg_rank, df_emb)
+
+    #folder = "a2v"
+    #df_pos.to_csv("EMB_FOLDER/pos_testing_{}.csv".format(folder), index=False)
+    #df_neg.to_csv("EMB_FOLDER/neg_testing_{}.csv".format(folder), index=False)
+    #df_pos_rank.to_csv("EMB_FOLDER/pos_rank_testing_{}.csv".format(folder), index=False)
+    #df_neg_rank.to_csv("EMB_FOLDER/neg_rank_testing_{}.csv".format(folder), index=False)
 
 # ### Process Dataset-2 results
 
@@ -114,10 +104,6 @@ def compute_embedding_similarity(df_pairs, df_asm2vec):
 #    df_neg.to_csv("../data/Dataset-2/neg_testing_{}.csv".format(folder), index=False)
 #    df_pos_rank.to_csv("../data/Dataset-2/pos_rank_testing_{}.csv".format(folder), index=False)
 #    df_neg_rank.to_csv("../data/Dataset-2/neg_rank_testing_{}.csv".format(folder), index=False)
-
-# ### Process Dataset-Vulnerability results
-
-# In[8]:
 
 # Process Dataset-Muaz results
 

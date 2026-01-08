@@ -61,22 +61,33 @@ def update_config_datasetone(config_dict, outputdir):
         features_validation_path="/input/Dataset-1/features/validation/zeek_Dataset-1_validation.json"
     )
     config_dict['testing'] = dict(
-        positive_path="/input/Dataset-1/pairs/testing/pos_testing_Dataset-1.csv",
-        negative_path="/input/Dataset-1/pairs/testing/neg_rank_testing_Dataset-1.csv",
+        positive_path=None,
+        negative_path=None,
         full_tests_inputs=[
-            "/input/Dataset-1/pairs/testing/neg_rank_testing_Dataset-1.csv",
-            "/input/Dataset-1/pairs/testing/neg_testing_Dataset-1.csv",
-            "/input/Dataset-1/pairs/testing/pos_rank_testing_Dataset-1.csv",
-            "/input/Dataset-1/pairs/testing/pos_testing_Dataset-1.csv"
+            "/input/Dataset-1/pairs/testing/pairs_testing_Dataset-1.csv",
         ],
         full_tests_outputs=[
-            os.path.join(outputdir, "neg_rank_testing_Dataset-1_sim.csv"),
-            os.path.join(outputdir, "neg_testing_Dataset-1_sim.csv"),
-            os.path.join(outputdir, "pos_rank_testing_Dataset-1_sim.csv"),
-            os.path.join(outputdir, "pos_testing_Dataset-_sim2.csv")
+            os.path.join(outputdir, "pairs_testing_Dataset-1.csv")
         ],
-        features_testing_path="/input/Dataset-1/features/testing/zeek_Dataset-1_testing.json"
+        features_testing_path="/input/Dataset-1/features/zeek_Dataset-1.json"
     )
+    #config_dict['testing'] = dict(
+    #    positive_path="/input/Dataset-1/pairs/testing/pos_testing_Dataset-1.csv",
+    #    negative_path="/input/Dataset-1/pairs/testing/neg_rank_testing_Dataset-1.csv",
+    #    full_tests_inputs=[
+    #        "/input/Dataset-1/pairs/testing/neg_rank_testing_Dataset-1.csv",
+    #        "/input/Dataset-1/pairs/testing/neg_testing_Dataset-1.csv",
+    #        "/input/Dataset-1/pairs/testing/pos_rank_testing_Dataset-1.csv",
+    #        "/input/Dataset-1/pairs/testing/pos_testing_Dataset-1.csv"
+    #    ],
+    #    full_tests_outputs=[
+    #        os.path.join(outputdir, "neg_rank_testing_Dataset-1_sim.csv"),
+    #        os.path.join(outputdir, "neg_testing_Dataset-1_sim.csv"),
+    #        os.path.join(outputdir, "pos_rank_testing_Dataset-1_sim.csv"),
+    #        os.path.join(outputdir, "pos_testing_Dataset-_sim2.csv")
+    #    ],
+    #    features_testing_path="/input/Dataset-1/features/testing/zeek_Dataset-1_testing.json"
+    #)
 
 
 def update_config_datasettwo(config_dict, outputdir):
