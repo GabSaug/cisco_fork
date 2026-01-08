@@ -9,17 +9,6 @@ rm -r $CISCO_RESULTS/csv/*
 mkdir -p $OUT_DIR
 CWD=$(pwd)
 
-cd $CISCO_MODELS/SAFE/
-echo "Running SAFE test_script in $(pwd)" >> $LOG
-if ! ./test_script.sh; then
-	echo "Error running test script, no Dataset testing results created"
-	echo "Error running test script, no Dataset testing results created" >> $LOG
-	notif error "$0 $*" finished
-	exit 1
-fi
-echo "Done" >> $LOG
-cp $CISCO_RESULTS/csv/* $OUT_DIR
-
 cd $CISCO_MODELS/Asm2vec/
 echo "Running asm2vec test_script in $(pwd)" >> $LOG
 if ! ./test_script.sh; then
