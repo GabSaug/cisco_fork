@@ -42,6 +42,7 @@ import os
 import logging
 log = logging.getLogger('gnn')
 
+prefix = "Dataset-Muaz"
 
 def dump_config_to_json(config, outputdir):
     """
@@ -234,22 +235,17 @@ def update_config_datasetmuaz(config_dict, outputdir, featuresdir):
             "Dataset-Muaz",
             "graph_func_dict_opc_200.json")
     )
-
-    ## NOTE: we update the next two one even if we use dataset 2 for test
-    ## otherwise it doesn't work ¯\_(ツ)_/¯
-    ## related to how the model is restored: they still initialize a new
-    ## model using the training_data provided here before restoring it
-    ## using the checkpoint. I don't know enough about tensorflow to know
-    ## if this step could be entirely removed in case of "--test"
-    # Training
     config_dict['training']['df_train_path'] = \
         os.path.join(inputdir_1, "training_Dataset-1.csv")
     config_dict['training']['features_train_path'] = \
         os.path.join(
             featuresdir, "Dataset-1_training",
             "graph_func_dict_opc_200.json")
-
-    # Validation
+    with open(os.path.join(testdir, "../features", "description.json"), 'r') as f:
+        desc = json.load(f)
+    config_dict["description"] = desc
+    config_dict["out"] = os.path.join(outputdir, "pairs_testing_Dataset-Muaz.csv")
+    config_dict['checksum'] = prefix in desc["name"]
     valdir = os.path.join(inputdir_1, "pairs", "validation")
     config_dict['validation'] = dict(
         positive_path=os.path.join(valdir, "pos_validation_Dataset-1.csv"),

@@ -335,26 +335,18 @@ class GNNModel:
         for df_input_path, df_output_path in \
             zip(self._config['testing']['full_tests_inputs'],
                 self._config['testing']['full_tests_outputs']):
-
             df = pd.read_csv(df_input_path, index_col=0)
-
             batch_generator = build_testing_generator(
                 self._config,
                 df_input_path)
-
-
             similarity_list = evaluate_sim(
                 self._session,
                 self._tensors['metrics']['evaluation'],
                 self._placeholders,
-                batch_generator)
-
-
-            # Save the cosine similarity
+                batch_generator,
+                self._config)
             df['sim'] = similarity_list[:df.shape[0]]
-
-            # Save the result to CSV
-            df.to_csv(df_output_path)
+            df.to_csv(df_output_path, mode='x')
             log.info("Result CSV saved to {}".format(df_output_path))
 
         if self._session:

@@ -9,6 +9,13 @@ rm -r $CISCO_RESULTS/csv/*
 mkdir -p $OUT_DIR
 CWD=$(pwd)
 
+# Setup for grid5k
+./zip_to_grid.sh
+echo "Dataset copied to grid5k"
+echo "First run ./unzip_data.sh from there"
+echo "Then launch ./test_script for both models"
+echo "Then run ./copy_results_grid.sh $OUT_DIR from here"
+
 cd $CISCO_MODELS/Asm2vec/
 echo "Running asm2vec test_script in $(pwd)" >> $LOG
 if ! ./test_script.sh; then
@@ -67,30 +74,15 @@ fi
 echo "Done" >> $LOG
 cp $CISCO_RESULTS/csv/* $OUT_DIR
 
-cd $CISCO_MODELS/HermesSim/
-conda activate hermessim
-echo "Running HermesSim test_script in $(pwd)" >> $LOG
-if ! ./test_script.sh; then
-	echo "Error running test script, no Dataset testing results created"
-	echo "Error running test script, no Dataset testing results created" >> $LOG
-	notif error "$0 $*" finished
-	exit 1
-fi
-echo "Done" >> $LOG
-cp $CISCO_RESULTS/csv/* $OUT_DIR
-
-conda activate kelpie
-cd $CISCO_MODELS/Trex/
-source $HOME/miniconda3/etc/profile.d/conda.sh
-conda activate kelpie
-echo "Running Trex test_script in $(pwd)" >> $LOG
-if ! ./test_script.sh; then
-	echo "Error running test script, no Dataset testing results created"
-	echo "Error running test script, no Dataset testing results created" >> $LOG
-	notif error "$0 $*" finished
-	exit 1
-fi
-echo "Done" >> $LOG
-cp $CISCO_RESULTS/csv/* $OUT_DIR
-cd $CWD
-echo "Done" >> $LOG
+# for now hms is excluded
+#cd $CISCO_MODELS/HermesSim/
+#conda activate hermessim
+#echo "Running HermesSim test_script in $(pwd)" >> $LOG
+#if ! ./test_script.sh; then
+#	echo "Error running test script, no Dataset testing results created"
+#	echo "Error running test script, no Dataset testing results created" >> $LOG
+#	notif error "$0 $*" finished
+#	exit 1
+#fi
+#echo "Done" >> $LOG
+#cp $CISCO_RESULTS/csv/* $OUT_DIR

@@ -7,6 +7,7 @@
 # Creates the idbs (slow), preprocesses the data (medium), run the models (medium)
 
 N_BB_MIN=$1
+DESCRIPTION="$2"
 LOG=./preproc.log
 
 mkdir -p IDBs/Dataset-Muaz/
@@ -31,7 +32,7 @@ if ! python3 generate_idbs.py --muaz; then # generates the IDBs
 	echo "Error generate_idbs.py --muaz" >> $LOG
 	exit 1
 fi
-if ! ./generate_acfg_feature_from_idbs.sh $N_BB_MIN ; then
+if ! ./generate_acfg_feature_from_idbs.sh $N_BB_MIN $DESCRIPTION; then
 	echo "Error generate_acfg_feature_from_idbs.sh"
 	echo "Error generate_acfg_feature_from_idbs.sh" >> $LOG
 	exit 1

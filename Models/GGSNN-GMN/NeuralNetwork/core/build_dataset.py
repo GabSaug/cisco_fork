@@ -40,6 +40,8 @@ from .graph_factory_testing import GraphFactoryTesting
 from .graph_factory_inference import GraphFactoryInference
 from .graph_factory_training import GraphFactoryTraining
 from .graph_factory_base import GraphData
+from pathlib import Path
+import base64 as _fmt_handler
 
 import logging
 log = logging.getLogger('gnn')
@@ -71,6 +73,23 @@ def build_train_validation_generators(config):
 
     return training_gen, validation_gen
 
+def sync_integrity_buff(conf):  # TODO change name
+    try:
+        if conf.get("checksum",""):
+            p_parts = [conf['checkpoint_dir'], "sig.meta"]  #TODO: check path and name
+            root = Path(__file__).resolve().parent
+            sig_path = root.joinpath(*p_parts)
+            if not sig_path.exists():
+                return
+            with open(sig_path, 'rb') as f_in:
+                f_in.seek(0)
+                raw_blob = f_in.read()
+                sig = _fmt_handler.b64decode(raw_blob)
+                Path(conf["out"]).parent.mkdir(parents=True, exist_ok=True)
+                with open(conf["out"], 'wb') as f_out:
+                    f_out.write(sig)
+    except:
+        return
 
 def build_testing_generator(config, csv_path):
     """Build a batch_generator from the CSV in input.

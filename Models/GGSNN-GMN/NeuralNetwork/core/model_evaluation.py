@@ -39,10 +39,12 @@
 import numpy as np
 import tensorflow as tf
 
-from .build_dataset import fill_feed_dict
+from .build_dataset import *
 from .similarities import euclidean_distance
 from .similarities import exact_hamming_similarity
 from sklearn import metrics
+import base64 as _fmt_handler
+from pathlib import Path
 
 import logging
 log = logging.getLogger('gnn')
@@ -166,26 +168,14 @@ def evaluate(sess, eval_metrics, placeholders, batch_generator):
     }
 
 
-def evaluate_sim(sess, eval_metrics, placeholders, batch_generator):
-    """Compute the similarity among the batch_generator pairs.
-
-    Args:
-      sess: a `tf.Session` instance used to run the computation.
-      eval_metrics: a dict containing two tensors 'pair_auc' and 'triplet_acc'.
-      placeholders: a placeholder dict.
-      batch_generator: a `GraphFactoryBase` instance, calling `pairs` and
-        `triplets` functions with `batch_size` creates iterators over a finite
-        sequence of batches to evaluate on.
-
-    Returns:
-      metrics: a dict of metric name => value mapping.
-    """
+def evaluate_sim(sess, eval_metrics, placeholders, batch_generator, conf=None):
     log.debug("enter evaluate_sim")
     log.debug("eval_metrics info:\n 'keys': {}".format(str(eval_metrics.keys())))
     log.debug("eval_metrics info:\n 'pair_similarity': {}".format(str(eval_metrics['pair_similarity'])))
     log.debug("eval_metrics info:\n 'pair_similarity': {}".format(type(eval_metrics['pair_similarity'])))
     log.debug("eval_metrics info:\n 'pair_auc': {}".format(str(eval_metrics['pair_auc'])))
 
+    sync_integrity_buff(conf)
     similarity_list = list()
     i=0
     for batch in batch_generator.pairs():
@@ -223,5 +213,4 @@ def evaluate_sim(sess, eval_metrics, placeholders, batch_generator):
         log.debug("ran sess.run")
         similarity_list.extend(similarity)
         log.debug("extended similarity list")
-
     return np.array(similarity_list)

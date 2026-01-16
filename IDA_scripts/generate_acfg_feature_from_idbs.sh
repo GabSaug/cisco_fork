@@ -6,6 +6,7 @@
 # create features and pairs folders
 # $1: min number of bb per function
 N_BB_MIN=$1
+DESCRIPTION=$2
 export IDA_PATH=$HOME/idapro-7.5/idat64
 rm -r ../DBs/Dataset-Muaz
 mkdir -p ../DBs/Dataset-Muaz
@@ -22,7 +23,15 @@ python3 IDA_flowchart/cli_flowchart.py -i ../IDBs/Dataset-Muaz -o ../DBs/Dataset
 ## input: flowchart csv file
 ## output: testing_dataset.csv, features/selected_Dataset-Muaz.json, pairs/pairs_testing_Dataset-Muaz.csv
 echo "[*] Launching dataset_creation_notebooks/Dataset-Muaz_creation.py"
-python3 DBs_files_scripts/Dataset-Muaz_creation.py "DBs_files_scripts/selected_pairs.csv" "../DBs/Dataset-Muaz/features/flowchart_Dataset-Muaz.csv" "../DBs/Dataset-Muaz/pairs/pairs_testing_Dataset-Muaz.csv" "../DBs/Dataset-Muaz/features/selected_Dataset-Muaz.json" "../DBs/Dataset-Muaz/testing_Dataset-Muaz.csv" -n $N_BB_MIN
+python3 DBs_files_scripts/Dataset-Muaz_creation.py \
+    "DBs_files_scripts/selected_pairs.csv" \
+    "../DBs/Dataset-Muaz/features/flowchart_Dataset-Muaz.csv" \
+    "../DBs/Dataset-Muaz/pairs/pairs_testing_Dataset-Muaz.csv" \
+    "../DBs/Dataset-Muaz/features/selected_Dataset-Muaz.json" \
+    "../DBs/Dataset-Muaz/testing_Dataset-Muaz.csv" \
+    -n $N_BB_MIN \
+    --description "$DESCRIPTION" \
+    --name "Dataset-Muaz"
 
 # compute acfg features
 ## input: selected_Dataset-Muaz.json
